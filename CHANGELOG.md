@@ -7,6 +7,12 @@ Versioning follows [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ---
 
+## [1.5.4] — 2026-02-26
+
+### Changed
+
+- Updated `README.md`
+
 ## [1.5.3] — 2026-02-26
 
 ### Changed

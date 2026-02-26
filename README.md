@@ -1,6 +1,6 @@
 # AI Business OS
 
-**Engine version:** v1.5.3
+**Engine version:** v1.5.4
 
 A ready-made Claude Code workspace for non-technical businesses. Provides folder structure, commands, skills, rules, and documentation so you can start using Claude Code productively from day one.
 
@@ -17,10 +17,22 @@ A ready-made Claude Code workspace for non-technical businesses. Provides folder
 ### Folder Structure
 ```
 your-biz-os/
-├── Projects/          Active work, workflows, and archive
-├── Documentation/     Templates and reports
-├── Infrastructure/    Scripts and automation
-└── Clients/           Client/customer folders
+├── .claude/                    Agent configuration (the engine)
+│   ├── agents/                 Agent definitions
+│   ├── commands/               Slash commands (/day, /night, etc.)
+│   ├── config/                 Workspace configuration
+│   ├── docs/                   Documentation and guides
+│   ├── rules/                  Behavioural rules (auto-loaded)
+│   ├── skills/                 Reusable workflow skills
+│   └── state/                  Project state and schema
+├── .vscode/                    VS Code settings and extensions
+├── Archive/                    Completed or retired items
+├── Clients/                    Client/customer folders
+├── Documentation/              Templates and reports
+├── Infrastructure/             Engine scripts and hooks
+│   └── Scripts/                Update, install, and validation scripts
+├── Projects/                   Active work and workflows
+└── Scripts/                    Operational scripts (PRIMA-managed)
 ```
 
 ### Commands
@@ -33,6 +45,8 @@ your-biz-os/
 | `/sync` | Quick commit and push |
 | `/newproject` | Create a new project folder |
 | `/newclient` | Create a new client folder |
+| `/timeline` | Interactive Gantt-style project timeline |
+| `/install-pack` | Install an extension pack into the workspace |
 | `/update` | Check for and apply engine updates |
 
 ### Skills
@@ -62,6 +76,7 @@ AI Business OS includes lightweight project tracking out of the box — project 
 - Automatic checkpoints — structured progress snapshots written silently to disk
 - Enhanced `/day`, `/night`, `/status` with priority routing, overdue detection, and recommended actions
 - `/resume` command — pick up exactly where you left off
+- `/timeline` command — interactive Gantt-style project timelines with scope selection
 - Duplicate detection — prevents accidental project duplication
 - Richer state management — priorities, pending items, session history with project cross-references
 
