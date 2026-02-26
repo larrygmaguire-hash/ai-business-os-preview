@@ -7,12 +7,19 @@ Versioning follows [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ---
 
-## [1.5.1] — 2026-02-26
+## [1.5.3] — 2026-02-26
+
+### Changed
+
+- Updated `README.md`
+
+## [1.5.2] — 2026-02-26
 
 ### Changed
 
 - `/newproject` — added Step 3 (Rules and Skills) to the project creation wizard. Users are now prompted to associate project-specific rules and skills during setup. Existing files are detected automatically; new ones are flagged for creation at completion.
 - CLAUDE.md template updated — `## Rules` and `## Skills` sections now use tables showing file path and existence status when items are added
+- Engine manifest: registered `/timeline` as PRIMA-managed (file provided by PRIMA Plugin, not the engine)
 
 ---
 
