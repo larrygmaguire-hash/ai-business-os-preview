@@ -79,7 +79,7 @@ AI Business OS includes lightweight project tracking out of the box — project 
 
 ### Upgrade: PRIMA Plugin
 
-[PRIMA](https://github.com/larrygmaguire-hash/prima-plugin) (Project Recording, Indexing, Memory Agent) upgrades the built-in tracking with:
+[PRIMA](https://github.com/larrygmaguire-hash/prima-plugin) (Project Registration, Indexing & Management Assistant) upgrades the built-in tracking with:
 
 - Session memory — where you stopped, what you did last, searchable history
 - Automatic checkpoints — structured progress snapshots written silently to disk
