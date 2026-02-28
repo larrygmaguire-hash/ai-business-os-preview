@@ -7,6 +7,63 @@ Versioning follows [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ---
 
+## [1.7.0] — 2026-02-28
+
+### Added
+
+- Engine Protection system — six-layer protection for critical engine files
+- `critical` array in `engine-manifest.json` — machine-readable list of files essential to AI Business OS operation
+- `.claude/rules/engine-protection.md` — Claude rule preventing modification of critical files, directing users to create companion files instead
+- `ENGINE CRITICAL` markers on all critical files (FRAMEWORK.md, autonomy-levels, blocked-commands, checkpoint-protocol, settings.json, update script, pre-commit hook, install script)
+- Pre-commit hook now warns (client repos) or informs (template repo) when critical files are staged for commit
+- Engine health check in `/status` — compares critical file hashes against last backup to detect drift
+- Three-way merge for non-critical engine files during `/update` — preserves client modifications alongside upstream changes
+- File Ownership and Engine Protection section in getting-started.md
+- PRIMA Plugin updates integrated into `/update` — single command now checks and applies both engine and PRIMA updates via `prima-upstream` remote
+- `.claude/prima-manifest.json` added to `primaManaged[]` in engine manifest — engine updates skip this file
+- PRIMA dry-run preview in `--dry-run` mode — shows PRIMA file changes alongside engine changes
+- Windows/WSL requirements section in getting-started.md and README.md
+
+### Changed
+
+- `update-engine.sh` — critical files always overwrite; non-critical files with local modifications are merged via `git merge-file`; conflict files are flagged for manual resolution; PRIMA update phase runs after engine phase using `prima-upstream` remote
+- `update.md` command — describes combined engine + PRIMA update flow, PRIMA SSH error handling
+- `pre-commit-hook.sh` — added critical file detection with interactive confirmation for client repos
+- `install-hooks.sh` — now works for both template and client repos (critical file protection for clients, full manifest management for template)
+- `status-report` skill — now includes engine health check section
+
+## [1.6.1] — 2026-02-27
+
+### Changed
+
+- Updated `.claude/commands/newclient.md`
+- Updated `Infrastructure/Scripts/prima/validate-state.sh`
+
+## [1.6.0] — 2026-02-27
+
+### Added
+
+- `Finance/CLAUDE.md`
+- `Legal/CLAUDE.md`
+- `Marketing/CLAUDE.md`
+- `Operations/CLAUDE.md`
+- `Products/CLAUDE.md`
+- `Sales/CLAUDE.md`
+
+### Changed
+
+- Updated `.claude/docs/folder-structure.md`
+- Updated `.claude/rules/file-conventions.md`
+- Updated `README.md`
+
+## [1.5.5] — 2026-02-27
+
+### Changed
+
+- Updated `.claude/docs/getting-started.md`
+- Updated `.gitignore`
+- Updated `README.md`
+
 ## [1.5.4] — 2026-02-26
 
 ### Changed

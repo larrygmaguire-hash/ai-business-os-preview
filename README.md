@@ -1,6 +1,6 @@
 # AI Business OS
 
-**Engine version:** v1.5.4
+**Engine version:** v1.7.0
 
 A ready-made Claude Code workspace for non-technical businesses. Provides folder structure, commands, skills, rules, and documentation so you can start using Claude Code productively from day one.
 
@@ -29,11 +29,20 @@ your-biz-os/
 ├── Archive/                    Completed or retired items
 ├── Clients/                    Client/customer folders
 ├── Documentation/              Templates and reports
+├── Finance/                    Accounts, budgets, tax, reporting
+├── Human Resources/            Recruitment, policies, training
 ├── Infrastructure/             Engine scripts and hooks
 │   └── Scripts/                Update, install, and validation scripts
+├── Legal/                      Contracts, compliance, IP
+├── Marketing/                  Campaigns, content, social media
+├── Operations/                 Processes, vendors, logistics
+├── Products/                   Catalogue, development, pricing
 ├── Projects/                   Active work and workflows
+├── Sales/                      Pipeline, proposals, contracts
 └── Scripts/                    Operational scripts (PRIMA-managed)
 ```
+
+Department folders (`Finance/` through `Sales/`) are for internal business functions. See [Folder Structure](.claude/docs/folder-structure.md) for a full guide including how to choose between Projects, Clients, and Department folders for organising your work.
 
 ### Commands
 | Command | Purpose |
@@ -87,24 +96,14 @@ The base commands work without PRIMA. PRIMA replaces them with fuller versions.
 Install [Prima Memory](https://github.com/larrygmaguire-hash/prima-memory) for conversation history search:
 
 ```bash
-git clone https://github.com/larrygmaguire-hash/prima-memory.git ~/.prima-memory
-cd ~/.prima-memory && npm install && npm run build
+mkdir -p .claude/mcp-servers
+git clone https://github.com/larrygmaguire-hash/prima-memory.git .claude/mcp-servers/prima-memory
+cd .claude/mcp-servers/prima-memory && npm install && npm run build
 ```
 
-Then add to `~/.claude.json`:
-```json
-{
-  "mcpServers": {
-    "prima-memory": {
-      "type": "stdio",
-      "command": "node",
-      "args": ["~/.prima-memory/dist/index.js"]
-    }
-  }
-}
-```
+Prima Memory is registered in `.mcp.json` (workspace-scoped — already included in the template). No changes to `~/.claude.json` are needed.
 
-This gives Claude searchable access to past sessions — useful for recalling decisions, tracking file changes, and maintaining continuity across sessions. Prima Memory supersedes claude-mems, looking upstream to the original for updates.
+After installing, restart Claude Code. This gives Claude searchable access to past sessions — useful for recalling decisions, tracking file changes, and maintaining continuity across sessions. Each workspace gets its own isolated database at `.prima-memory/`, so no data leaks between workspaces.
 
 ## Updating
 
@@ -146,6 +145,7 @@ bash Infrastructure/Scripts/update-engine.sh
 - [Claude Code](https://claude.com/claude-code) (VS Code extension)
 - Git
 - A GitHub account (for template cloning and sync)
+- **Windows users:** [WSL](https://learn.microsoft.com/en-us/windows/wsl/install) (Windows Subsystem for Linux) — see [Getting Started](.claude/docs/getting-started.md) for setup steps
 
 ## Documentation
 
