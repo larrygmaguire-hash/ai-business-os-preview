@@ -7,6 +7,20 @@ Versioning follows [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ---
 
+## [Unreleased]
+
+### Added
+
+- `/save` command — writes a session checkpoint and returns a timestamp reference for resumption
+- `/resume` command — retrieve context from a previous session to continue where you left off. Supports PRIMA Memory (rich detail), state.json sessionHistory (fallback), time-based lookup (`/resume 15:40`), and keyword search (`/resume liquidcool`)
+
+## [1.7.1] — 2026-02-28
+
+### Changed
+
+- Updated `.claude/docs/getting-started.md`
+- Updated `README.md`
+
 ## [1.7.0] — 2026-02-28
 
 ### Added

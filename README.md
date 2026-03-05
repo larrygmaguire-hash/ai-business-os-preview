@@ -1,6 +1,6 @@
 # AI Business OS
 
-**Engine version:** v1.7.0
+**Engine version:** v1.7.1
 
 A ready-made Claude Code workspace for non-technical businesses. Provides folder structure, commands, skills, rules, and documentation so you can start using Claude Code productively from day one.
 
@@ -56,6 +56,8 @@ Department folders (`Finance/` through `Sales/`) are for internal business funct
 | `/newclient` | Create a new client folder |
 | `/timeline` | Interactive Gantt-style project timeline |
 | `/install-pack` | Install an extension pack into the workspace |
+| `/save` | Save session context for resumption in a new conversation |
+| `/resume` | Resume a previous session — retrieve context and pick up where you left off |
 | `/update` | Check for and apply engine updates |
 
 ### Skills
@@ -91,9 +93,9 @@ AI Business OS includes lightweight project tracking out of the box — project 
 
 The base commands work without PRIMA. PRIMA replaces them with fuller versions.
 
-## Optional: Session Memory (Prima Memory)
+## Enhance your OS with PRIMA Memory
 
-Install [Prima Memory](https://github.com/larrygmaguire-hash/prima-memory) for conversation history search:
+PRIMA Memory is the memory enhancement add-on for AI Business OS and PRIMA Plugin. Install [PRIMA Memory](https://github.com/larrygmaguire-hash/prima-memory) for conversation history search:
 
 ```bash
 mkdir -p .claude/mcp-servers
@@ -101,7 +103,7 @@ git clone https://github.com/larrygmaguire-hash/prima-memory.git .claude/mcp-ser
 cd .claude/mcp-servers/prima-memory && npm install && npm run build
 ```
 
-Prima Memory is registered in `.mcp.json` (workspace-scoped — already included in the template). No changes to `~/.claude.json` are needed.
+PRIMA Memory is registered in `.mcp.json` (workspace-scoped — already included in the template). No changes to `~/.claude.json` are needed.
 
 After installing, restart Claude Code. This gives Claude searchable access to past sessions — useful for recalling decisions, tracking file changes, and maintaining continuity across sessions. Each workspace gets its own isolated database at `.prima-memory/`, so no data leaks between workspaces.
 
