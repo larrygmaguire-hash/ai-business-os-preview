@@ -1,6 +1,10 @@
+<p align="center">
+  <img src="assets/brand-card.png" alt="AI Business OS" width="800">
+</p>
+
 # AI Business OS
 
-**Engine version:** v1.7.1
+**Engine version:** v1.9.3
 
 A ready-made Claude Code workspace for non-technical businesses. Provides folder structure, commands, skills, rules, and documentation so you can start using Claude Code productively from day one.
 
@@ -50,14 +54,13 @@ Department folders (`Finance/` through `Sales/`) are for internal business funct
 | `/setup` | First-time personalisation wizard |
 | `/day` | Morning briefing — sync, scan projects, suggest priorities |
 | `/night` | End-of-session — summarise work, commit, push |
+| `/save` | Mid-session save — capture current state and return a resume reference before context limits are reached |
 | `/status` | Overview of all projects and recent activity |
 | `/sync` | Quick commit and push |
 | `/newproject` | Create a new project folder |
 | `/newclient` | Create a new client folder |
 | `/timeline` | Interactive Gantt-style project timeline |
 | `/install-pack` | Install an extension pack into the workspace |
-| `/save` | Save session context for resumption in a new conversation |
-| `/resume` | Resume a previous session — retrieve context and pick up where you left off |
 | `/update` | Check for and apply engine updates |
 
 ### Skills
@@ -92,6 +95,8 @@ AI Business OS includes lightweight project tracking out of the box — project 
 - Richer state management — priorities, pending items, session history with project cross-references
 
 The base commands work without PRIMA. PRIMA replaces them with fuller versions.
+
+**`/save` is not replaced by PRIMA.** It remains active in any AI Business OS workspace regardless of whether PRIMA is installed. Use `/save` whenever you want to manually capture a stable state mid-session — before context limits are reached, before switching to a different task, or before a complex operation. `/save` writes a checkpoint to disk, updates project records in `state.json`, and returns a timestamped reference (`/resume HH:MM`) for the next session. PRIMA's automatic checkpoints (every ~20 tool calls) and `/night` complement this but do not replace the deliberate save point that `/save` provides.
 
 ## Enhance your OS with PRIMA Memory
 
