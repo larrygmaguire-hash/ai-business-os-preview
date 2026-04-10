@@ -24,6 +24,7 @@ your-biz-os/
 ├── .claude/                    Agent configuration (the engine)
 │   ├── agents/                 Agent definitions
 │   ├── commands/               Slash commands (/day, /night, etc.)
+│   ├── company/                Your organisation context (voice, brand, team, etc.)
 │   ├── config/                 Workspace configuration
 │   ├── docs/                   Documentation and guides
 │   ├── rules/                  Behavioural rules (auto-loaded)
@@ -63,19 +64,30 @@ Department folders (`01 Finance/` through `07 Legal/`) are numbered for consiste
 | `/install-pack` | Install an extension pack into the workspace |
 | `/update` | Check for and apply engine updates |
 
-### Skills
+### Skills (13 built-in)
+- **Copywriting** — articles, blog posts, social media, landing pages, ads, funnels, headlines, editing
+- **Search engine optimisation** — on-page SEO (Yoast-aligned), technical SEO audits, schema markup
+- **Email drafting** — client responses, introductions, follow-ups, meeting requests, internal comms
+- **Creating presentations** — slide decks from briefs with brand integration and speaker notes
+- **Processing spreadsheets** — analyse CSV/Excel, identify trends, generate charts, add formulas
+- **Processing documents** — create, edit, format Word documents with tracked changes
+- **Processing PDFs** — extract, merge, split with automatic large-file handling (5-level scale)
+- **Documenting workflows** — SOPs, checklists, playbooks, onboarding guides, process maps
 - **Drafting documents** — proposals, reports, briefs, memos
 - **Meeting notes** — structured summaries from meeting content
-- **Processing PDFs** — extract, merge, split with automatic large-file handling (5-level scale)
 - **Client setup** — new client onboarding
 - **Status reports** — workspace activity summaries
 - **Creating skills** — build your own custom skills
 
+All skills read from `.claude/company/` for voice, brand, and audience context. Users can customise any skill — edits are preserved across engine updates via three-way merge.
+
 ### Rules
+- Engine protection (three-tier file classification with PreToolUse hooks)
 - Blocked commands (destructive action safeguards)
 - Content defaults (language, tone, formality)
 - File conventions (placement and naming)
 - Autonomy levels (when Claude acts vs asks)
+- PDF processing scale (5-level size classification)
 - Checkpoint protocol (standardised approval points)
 
 ## Project Tracking
@@ -126,7 +138,7 @@ Each workspace gets its own isolated database at `.prima-memory/`, so no data le
 
 ## Updating
 
-AI Business OS separates **engine files** (rules, skills, commands, scripts) from **client files** (your CLAUDE.md, state, configuration). Engine updates never touch your customisations.
+AI Business OS separates **engine files** (rules, skills, commands, scripts) from **your files** (CLAUDE.md, company knowledge, state, configuration). Engine updates never touch your customisations.
 
 An `engine-manifest.json` lists every file owned by the template. Only files in the manifest are updated — your custom skills, projects, client data, and configuration are never touched. Backups are saved before every update and can be rolled back.
 

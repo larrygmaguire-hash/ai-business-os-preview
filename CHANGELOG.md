@@ -7,6 +7,42 @@ Versioning follows [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ---
 
+## [2.0.0] — 2026-04-10
+
+### Added
+
+- **7 new skills:** copywriting (with 12 reference files), creating-presentations, processing-spreadsheets, processing-documents, documenting-workflows, search-engine-optimisation (with technical SEO checklist), email-drafting
+- **Suite registry:** `.claude/suite-registry.json` — authoritative JSON registry of all PRIMA ecosystem components with versions, dependencies, and install methods
+- **Engine guard hook:** `Infrastructure/Scripts/engine-guard.sh` — PreToolUse hook blocking edits to critical engine files at the tool level
+- **Safety guard hook:** `Infrastructure/Scripts/safety-guard.sh` — PreToolUse hook blocking dangerous operations (rm -rf, force push, sudo, remote code execution, global package installs, global git config)
+- **Modular company knowledge:** `.claude/company/` directory with 6 files (overview, team, audiences, voice, brand, industry) replacing the monolithic CLIENT_PROFILE.md
+- **userCustomisable manifest tier:** new array in engine-manifest.json listing files users can edit freely with three-way merge on update
+- **PRIMA Ecosystem table** in README.md listing all 5 PRIMA components
+- Hooks registered in `.claude/settings.json` (PreToolUse for Edit/Write/MultiEdit and Bash)
+
+### Changed
+
+- **BREAKING:** `CLIENT_PROFILE.md` removed — replaced by `.claude/company/` directory. Existing users must migrate their company context to the new modular files.
+- **BREAKING:** CLAUDE.md placeholders changed from `[CLIENT_NAME]` to `[COMPANY_NAME]`, `[clientname]` to `[companyname]`, `[CLIENT_CLOUD_PATH]` to `[CLOUD_STORAGE_PATH]`
+- `engine-protection.md` rewritten with three-tier classification (critical, customisable, standard)
+- `FRAMEWORK.md` updated for company directory structure
+- `ROADMAP.md` expanded to cover full PRIMA ecosystem with status column on cross-product dependencies
+- `README.md` PRIMA sections consolidated into single ecosystem table
+- All skill context source tables updated to reference `.claude/company/` files
+- `getting-started.md` and `update.md` — "Client files" renamed to "Your files"
+- `integrations.json` comments updated from deployer language to self-setup language
+- `on-page-seo.md` moved from copywriting references to search-engine-optimisation references
+- `setup.md` updated to walk through modular company files during initial setup
+
+### Fixed
+
+- Duplicate `.claude/skills/processing-pdfs/SKILL.md` entry in engineFiles array
+- False tool references in ROADMAP.md cross-product table now marked as "Planned"
+
+### Removed
+
+- `.claude/CLIENT_PROFILE.md` (replaced by `.claude/company/` directory)
+
 ## [1.9.3] — 2026-03-17
 
 ### Changed
