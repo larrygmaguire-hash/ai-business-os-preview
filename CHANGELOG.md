@@ -7,12 +7,39 @@ Versioning follows [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ---
 
-## [Unreleased]
+## [1.9.3] — 2026-03-17
+
+### Changed
+
+- Updated `.claude/commands/newclient.md`
+
+## [1.9.2] — 2026-03-17
+
+### Changed
+
+- Updated `.gitignore`
+
+## [1.9.1] — 2026-03-13
+
+### Fixed
+
+- `update-engine.sh`: empty bash arrays crash under `set -u` strict mode — guarded all 16 array expansions with `${arr[@]+"${arr[@]}"}` idiom
+
+## [1.9.0] — 2026-03-11
 
 ### Added
 
-- `/save` command — writes a session checkpoint and returns a timestamp reference for resumption
-- `/resume` command — retrieve context from a previous session to continue where you left off. Supports PRIMA Memory (rich detail), state.json sessionHistory (fallback), time-based lookup (`/resume 15:40`), and keyword search (`/resume liquidcool`)
+- `.claude/docs/cloud-sync-warning.md`
+
+### Changed
+
+- Updated `.claude/docs/getting-started.md`
+
+## [1.8.0] — 2026-03-11
+
+### Added
+
+- `.claude/commands/save.md`
 
 ## [1.7.1] — 2026-02-28
 
