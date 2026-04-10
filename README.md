@@ -4,7 +4,7 @@
 
 # AI Business OS
 
-**Engine version:** v1.9.3
+**Engine version:** v2.0.0
 
 A ready-made Claude Code workspace for non-technical businesses. Provides folder structure, commands, skills, rules, and documentation so you can start using Claude Code productively from day one.
 
