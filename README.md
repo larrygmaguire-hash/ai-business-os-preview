@@ -4,7 +4,7 @@
 
 # AI Business OS
 
-**Engine version:** v2.0.0
+**Engine version:** v2.4.1
 
 A ready-made Claude Code workspace for non-technical businesses. Provides folder structure, commands, skills, rules, and documentation so you can start using Claude Code productively from day one.
 
@@ -79,7 +79,7 @@ Department folders (`01 Finance/` through `07 Legal/`) are numbered for consiste
 - **Status reports** — workspace activity summaries
 - **Creating skills** — build your own custom skills
 
-All skills read from `.claude/company/` for voice, brand, and audience context. Users can customise any skill — edits are preserved across engine updates via three-way merge.
+All skills read from `.claude/company/` for voice, brand, and audience context. Users can customise any skill — from the second update onwards, edits are preserved across engine updates via three-way merge (the first update has no merge base yet; it reports any files it had to overwrite and keeps pre-update copies in `.claude/engine-backups/`).
 
 ### Rules
 - Engine protection (three-tier file classification with PreToolUse hooks)
@@ -119,7 +119,7 @@ AI Business OS is the base platform. The PRIMA family of add-ons extends it with
 | [PRIMA Plugin](https://github.com/larrygmaguire-hash/prima-plugin) | File-copy overlay | AI Business OS | Project management, enhanced commands, state tracking, session lifecycle |
 | [PRIMA Memory](https://github.com/larrygmaguire-hash/prima-memory) | MCP server | AI Business OS | Session history search and context recovery across conversations |
 | [PRIMA CRM](https://github.com/larrygmaguire-hash/prima-crm) | MCP server | PRIMA Plugin | Client and contact relationship management |
-| [PRIMA Dashboard](https://github.com/larrygmaguire-hash/prima-dashboard) | Standalone app | PRIMA Plugin | Visual project dashboard (prototype) |
+| [PRIMA Dashboard](https://github.com/larrygmaguire-hash/prima-dashboard) | File-copy overlay | PRIMA Plugin | Visual project dashboard — local HTML generated from PRIMA state, opens in any browser |
 | [PRIMA Scholar](https://github.com/larrygmaguire-hash/prima-scholar) | Claude Code plugin | None (standalone) | Academic search, citation management, research library |
 
 The authoritative source for component versions, dependencies, and install methods is `.claude/suite-registry.json`.

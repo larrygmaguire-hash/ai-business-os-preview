@@ -7,6 +7,104 @@ Versioning follows [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ---
 
+## [2.4.1] — 2026-08-17
+
+Fixes the two silent-data-loss paths in `/update` (17 August Business OS audit, finding 6).
+
+### Fixed
+
+- **`/update` no longer discards client settings.** `.claude/settings.json` is classified `critical` and was replaced wholesale on every update — losing the permissions Claude Code itself records when the user approves tools, and any hooks the client had added, with no warning. It now gets a structured merge: engine entries and client additions are combined (union per `permissions.*` and `hooks.*` array, client values win on other keys), so engine updates ship new hooks and permissions without destroying client state. If either side is invalid JSON the file is overwritten with a loud warning, and the client's copy is in the per-update backup.
+- **First update on a customised workspace no longer overwrites silently.** With no backup directory there is no merge base, and locally modified files fell through to the clean-copy branch — overwritten unmerged, unreported. They are now classified and displayed as their own category ("no merge base"), listed in the preview and again after apply with the backup path for recovery. Fixed in both the engine phase and the PRIMA phase.
+
+### Changed
+
+- `.claude/rules/engine-protection.md` — documents the `settings.json` structured-merge exception to Tier 1 and the first-update no-merge-base behaviour.
+- `README.md` — the "edits are preserved across engine updates" claim now states the first-update exception instead of overpromising.
+- `.claude/engine-manifest.json` — `engineVersion` bumped to 2.4.1; `.claude/suite-registry.json` `host.version` updated.
+
+---
+
+## [2.4.0] — 2026-08-17
+
+### Added
+
+- `AGENTS.md` (workspace root) — universal entry point for non-Claude agents (Codex, Cursor, Gemini CLI, Copilot coding agent), which auto-load `AGENTS.md` rather than `CLAUDE.md`. Carries the agent-agnostic doctrine, mandatory pre-action reads, state-write discipline, and a location table. Pointers only — `CLAUDE.md` remains canonical.
+- `.claude/docs/agent-agnostic-design.md` — the five design rules that keep workspaces vendor-independent (plain-JSON state via bash + jq, runnable markdown procedures, rules in text not only in hooks, no vendor-specific copies, no vendor-specific formats), the two-door entry-point architecture, and the per-project stub template.
+- `Infrastructure/Scripts/backfill-project-agents-stubs.sh` — writes an `AGENTS.md` pointer stub into every project/client folder that has a `CLAUDE.md` but no stub. Supports `--dry-run`. Skips `.claude/`, `.git/`, and `Archive/`.
+- `PHILOSOPHY.md` — new "Agent-agnostic by design" entry under Part Five, Design Rationale.
+
+### Changed
+
+- `.claude/engine-manifest.json` — the three new files added to `engineFiles` so they propagate to existing workspaces via `/update`. `engineVersion` bumped to 2.4.0; `.claude/suite-registry.json` `host.version` and `README.md` reference updated.
+
+---
+
+## [2.3.1] — 2026-07-17
+
+### Fixed
+
+- Windows Git Bash support in `Infrastructure/Scripts/update-engine.sh` — three defects found and verified on a Windows 10 client workspace (native WinGet jq, Git Bash):
+  - **CRLF-safe jq output.** Native Windows jq builds terminate every output line with `\r\n`; the trailing `\r` survives bash's `read` and contaminates every filename, so `git show upstream/main:<file>` fails silently and the dry run under-reports the delta (e.g. "1 file to update" when the true delta is ~81 files). A `--force` apply in that state would write to `\r`-suffixed filenames, which are illegal on Windows — a no-op disguised as a successful update. Fixed with a single shadow function (`jq() { command jq "$@" | tr -d '\r'; }`) covering all current and future jq call sites.
+  - **MSYS path-conversion opt-out.** Git Bash rewrites `remote/branch:path` arguments into Windows path syntax before git sees them, crashing the script (exit 128) at "Fetching upstream...". Fixed by exporting `MSYS_NO_PATHCONV=1` and `MSYS2_ARG_CONV_EXCL='*'` at the top of the script. Both are no-ops on macOS/Linux.
+  - **HTTPS remotes.** Missing `upstream` / `prima-upstream` remotes were added as `git@github.com:` SSH URLs, which fail on client machines without SSH keys (`Permission denied (publickey)`). New remotes are now added over HTTPS, and an existing SSH URL for either remote is switched to HTTPS automatically.
+
+### Changed
+
+- `.claude/engine-manifest.json` — `engineVersion` bumped to 2.3.1.
+- `.claude/suite-registry.json` — `host.version` bumped to 2.3.1.
+- `README.md` — version reference updated to v2.3.1.
+
+**Note for existing Windows workspaces:** the broken script cannot fetch its own fix. Run once from the workspace root:
+`git fetch upstream && MSYS_NO_PATHCONV=1 git show upstream/main:Infrastructure/Scripts/update-engine.sh > Infrastructure/Scripts/update-engine.sh`
+then run `/update` normally.
+
+---
+
+## [2.3.0] — 2026-06-09
+
+### Added
+
+- `.claude/rules/decomposition.md` — new auto-loaded rule giving a four-way decision framework (tool inline / script / skill / subagent) for deciding what *kind* of thing a reusable capability or non-trivial task should be. Includes smell tests (loop over 3+ items → script; "always do X before Y" → skill; independent context-bloating work → subagent; one-fact output → inline) so Claude picks the cheapest shape that fits before building. Adapted from Anthropic's "Code with Claude" agent-decomposition workshop, generalised for non-developer business workspaces.
+
+### Changed
+
+- `.claude/engine-manifest.json` — `engineVersion` bumped to 2.3.0; `decomposition.md` added to `engineFiles` so it propagates to existing workspaces via `/update`.
+- `.claude/suite-registry.json` — `host.version` bumped to 2.3.0.
+- `README.md` — version reference updated to v2.3.0.
+
+---
+
+## [2.2.0] — 2026-05-21
+
+### Added
+
+- `.claude/commands/migrate-company.md` — slash command that converts the legacy monolithic `CLIENT_PROFILE.md` into the six modular files under `.claude/company/`. Auto-splits content using a canonical section-to-file mapping, then walks the user through any thin areas (typically `voice.md` and `brand.md`).
+- `Infrastructure/Scripts/migrate-company.sh` — bash helper that handles the mechanical part of the migration: detects state, archives the legacy file to `.claude/engine-backups/company-migration/`, scaffolds empty target files, and writes a migration manifest. Supports `--check` and `--rollback` modes. Idempotent and safe to re-run.
+
+### Changed
+
+- `Infrastructure/Scripts/update-engine.sh` — after a successful engine update, detects orphan `CLIENT_PROFILE.md` (at workspace root or under `.claude/`) and prints the two-step instruction to run the migration. Existing v1.x workspaces upgrading via `/update` are nudged toward `/migrate-company` rather than left with a stale monolithic profile.
+- `.claude/engine-manifest.json` — `engineVersion` bumped to 2.2.0; new files added to `engineFiles` so they propagate to existing workspaces via `/update`.
+- `.claude/suite-registry.json` — `host.version` bumped to 2.2.0 (previously 2.0.0, had not been kept in sync with engine-manifest).
+- `README.md` — version reference updated to v2.2.0.
+
+---
+
+## [2.1.0] — 2026-05-21
+
+### Added
+
+- `.claude/rules/no-permission-prompts.md` — rule clarifying that explicit user instructions are pre-authorised; no further confirmation needed for internal workspace actions
+
+### Changed
+
+- `.claude/commands/resume.md` — updated to support optional HH:MM time argument for checkpoint refinement (mirrors PRIMA Plugin v1.3.0)
+- `.claude/commands/save.md` — updated to align with task-enforcement reconciliation flow
+- `.claude/suite-registry.json` — PRIMA Plugin bumped 1.2.1 → 1.3.0; PRIMA Dashboard rewritten from prototype/standalone-app to released/file-copy (HTML-based, version 1.1.0)
+- `README.md` — version badge updated to v2.1.0
+
+---
+
 ## [2.0.0] — 2026-04-10
 
 ### Added
