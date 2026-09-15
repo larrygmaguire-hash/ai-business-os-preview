@@ -7,6 +7,46 @@ Versioning follows [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ---
 
+## [3.0.0] — 2026-09-15
+
+The default workspace layout changes shape. Nothing changes for a workspace that already exists.
+
+### Added
+
+- **Domain layout for new installations.** The template now ships `Domains/` with seventeen numbered domain folders (`01 Clients` to `16 Legal & Compliance`, plus `99 Cross-Domain`), each with its own `CLAUDE.md` and numbered reference subfolders (65 in total). Tracked projects live inside the domain they belong to; client folders live under `Domains/01 Clients/`. The domain `CLAUDE.md` files are `neverTouch`, so `/update` never overwrites a customised one and never recreates a domain a workspace has removed.
+- **`/newproject` and `/newclient` detect the layout.** Both open with a shell test, `[ -d Domains ]`. Where `Domains/` exists, `/newproject` asks which domain the project belongs to, writes `Domains/NN Name/{ID} {Project Name}` and records a `domain` field in state; `/newclient` writes `Domains/01 Clients/[Client-Name]`. Where `Domains/` is absent, both run exactly as in 2.x. PRIMA Project Management 1.4.0 carries the same gate in its `/newproject`.
+- `.vscode/extensions.json` recommends three more extensions alongside Claude Code and Bearded Icons: OpenAI Codex (`openai.chatgpt`), Ollama (`ollama.ollama`) and Live Preview (`ms-vscode.live-server`). VS Code offers them once when the workspace is first opened.
+- `folder-structure.md`, `file-conventions.md`, `FRAMEWORK.md`, `getting-started.md` and the README describe both layouts, with an "Installed Before 3.0" section for the `Projects/`, `Clients/` and department-folder layout. `available-automations.md`, `capabilities-reference.md` and `glossary.md` brought current: the seven remaining skills listed in full, the command tables complete, a "Skill Packs" section, and glossary entries for Domain, Reference Subfolder, Skill Pack and Tracked Project.
+- **`AGENTS.md` stubs in every domain folder and sample project**, written by `Infrastructure/Scripts/backfill-project-agents-stubs.sh`, and `/newproject` now writes the stub alongside each new project's `CLAUDE.md`. Non-Claude agents (Codex, Cursor, Gemini CLI, Copilot) load `AGENTS.md`, so without the stubs they never saw the domain or project rules. Stubs live outside `engineFiles` so `/update` cannot inject them into an existing workspace.
+- **Community block** at the top of the README linking to the GenAI Skills Academy learning community, and a "Skills Removed in 3.0" note in the skills section.
+- `agent-agnostic-design.md` records that only Claude Code discovers `.claude/commands/`, that Agent Skills adopters discover `.claude/skills/` automatically, and that `SOUL.md` is an OpenClaw bootstrap file the workspace does not ship. `ROADMAP.md` records the decision to convert commands to skills suite-wide in the next release.
+
+### Changed
+
+- **Sample content relocated.** `P001 Website Redesign` to `Domains/04 Information Technology/`, `P002 Q2 Marketing Campaign` to `Domains/07 Marketing/`, `P003 Staff Training Programme` to `Domains/03 Human Resources/`, the three sample clients and `_Templates/` to `Domains/01 Clients/`. Template `state.json` paths updated and `domain` recorded.
+- **`/day` and `/status` read projects from `state.json`** instead of listing `Projects/` and `Clients/` on disk, so a project filed anywhere (a domain, a client folder, a custom top-level folder) is reported. These two files are PRIMA-managed and reach only workspaces without PRIMA Project Management installed.
+- `suite-registry.json`: the PRIMA CRM entry no longer claims the CRM reads `tasks/P###.json`; it reads `taskCount` and `tasksDone` from project entries.
+
+### Fixed
+
+- **`/update` three-way merge base.** `update-engine.sh` used the most recent per-update backup as the merge base. That backup is a snapshot of the client's own files, so a client edit made before the previous update sat inside the base and was dropped silently whenever upstream rewrote that region; and a workspace whose backup was older than its installed version saw unedited files reported as conflicts. The base is now the pristine upstream file at the version the workspace last received, located by walking upstream history for the manifest commit carrying that `engineVersion` (and `version` for PRIMA Project Management). The backup remains the fallback when no such commit exists, and the preview names which base is in use. Verified against copies of both client workspaces: the client edit now appears in a conflict block, and spurious conflicts on unedited files disappear.
+- **`/update` no longer overwrites itself mid-run.** The script is an engine file and was replaced on disk while bash was still reading it, ending every update with a syntax or unbound-variable error at a line past the end of the old file. It now re-executes from a temporary copy first.
+
+### Removed
+
+- **Six skills leave the template:** `copywriting`, `search-engine-optimisation`, `email-drafting`, `creating-presentations`, `processing-spreadsheets` and `processing-documents`, with their manifest entries. Skills are now widely published by Anthropic, skills.sh and other providers, and these six are available as skill packs in the GenAI Skills Academy community. Seven skills remain: `client-setup`, `creating-skills`, `documenting-workflows`, `drafting-documents`, `meeting-notes`, `processing-pdfs` and `status-report`. Existing workspaces keep the six, because `/update` never deletes a local file that upstream no longer lists.
+- From the template only: the seven department folders (`01 Finance/` to `07 Legal/`), `Projects/` (including the empty `Projects/Workflows/`) and `Clients/`. Their content moved under `Domains/`. No path under any of them was ever listed in `engineFiles`, so `/update` does not touch these folders in an existing workspace.
+
+### Not Included
+
+- No migration. An existing workspace keeps its layout without exception. `Infrastructure/Scripts/migrate-folder-naming.sh` (the 2.0.0 department renaming script) is unchanged and unrelated.
+
+## [2.5.0] — 2026-09-02
+
+### Changed
+
+- Updated `.gitignore`
+
 ## [2.4.1] — 2026-08-17
 
 Fixes the two silent-data-loss paths in `/update` (17 August Business OS audit, finding 6).
