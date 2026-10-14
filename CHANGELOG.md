@@ -7,6 +7,52 @@ Versioning follows [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ---
 
+## [Unreleased]
+
+---
+
+## [3.0.1] — 2026-10-14
+
+Documentation and command fixes. Nothing changes in how an existing workspace is laid out.
+
+### Added
+
+- **`LICENSE` file.** The GenAI Skills Academy Software Licence now ships at the repository root and in the engine manifest, so `/update` delivers it; `package.json`-style pointers in the PRIMA products reference the same text. The README Licence section links it.
+- **Platforms and Support section in the README.** macOS is the tested platform; Windows may work through WSL or Git Bash but is not directly supported; no outcome is guaranteed on any operating system; support is purchased separately; contact larry@genaiskills.io.
+
+### Fixed
+
+- **Command tables complete.** `README.md`, `getting-started.md`, `available-automations.md` and the `FRAMEWORK.md` command table now list every command that ships in `.claude/commands/`, adding `/resume`, `/dashboard` and `/migrate-company` (and, in `FRAMEWORK.md`, `/save`, `/status`, `/update` and `/install-pack`).
+- **Dangling rule references.** `/migrate-company` cited `.claude/rules/communication.md` and the `creating-skills` skill cited `.claude/rules/plugin-development.md`; neither file exists. `/migrate-company` now states the one-question-at-a-time instruction in full, and `creating-skills` points to its own `references/skills-standard.md`.
+- **Project numbering.** `getting-started.md` said `/setup` lets you choose a numbering format and `folder-structure.md` said the format can be customised. `/setup` states the format is fixed at `P001` and the state schema enforces `^P\d{3}$`, so both documents now say the format is fixed in the base engine and custom formats come with PRIMA Project Management. `/newproject` still built the ID from `projectNumbering` in `integrations.json`, whose comment invited the user to change the format, and the schema had rejected custom formats since March although `/setup` had offered them before then.
+- **Project numbering comes from the project register.** `/newproject` now reads the IDs already in `state.json` before generating one. A new workspace starts at `P001`; a workspace that already uses another format (for example `PRJ-0001`) continues that format. Existing IDs are never changed, a second format is never introduced, and if the register already holds two formats `/newproject` stops and asks which one to use. The next number is the highest existing number plus one, and IDs are never reused. The state schema accepts the custom formats it accepted before March again, so an existing custom register cannot fail validation after an update. Both validators warn (without failing) when a register mixes formats. A re-run of `/setup` keeps existing numbering. `integrations.json`, `getting-started.md` and `folder-structure.md` describe this.
+- **Windows and Git Bash.** `getting-started.md` said Git Bash is not supported, while `update-engine.sh` carries the Git Bash fixes from 2.3.1. The page now says WSL is the supported environment, that the update script also runs under Git Bash, and that the other scripts have not been tested there.
+- **Engine health in `/status`.** `getting-started.md` and `engine-protection.md` say `/status` reports engine health, but `status.md` printed only the engine version. `/status` now runs the Engine Health Check and adds an Engine Health section to the report.
+- **Engine Health Check baseline.** The check as documented compared critical files with the latest `.claude/engine-backups/` folder, which holds the pre-update copies, so after a normal update it would flag every critical file the update changed. A new read-only mode, `update-engine.sh --health`, compares each critical file with the upstream copy at the version the workspace runs, accepting any upstream commit that carries that version. `settings.json` passes while it holds every engine permission and hook, since `/update` merges it. Line-ending differences are ignored. `/status`, the `status-report` skill and `engine-protection.md` now call the script.
+- **No warning before editing engine files.** `engine-protection.md` said users should know what happens to their edits on update but gave Claude no instruction to tell them. Claude now says, before editing any engine file, whether the change is blocked or merged on update with possible conflicts. The Tier 2 merge description names the upstream copy as the base.
+- **Base workspaces now receive fixes to the PRIMA-managed commands.** `/day`, `/night`, `/setup`, `/status`, `/sync`, `/newproject`, `/resume`, `/dashboard`, `state-validation.md`, `state.schema.json`, `Scripts/backup-state.sh` and `Scripts/validate-state.sh` ship in the base engine but were listed only as PRIMA-managed, so `/update` never changed them in a workspace without PRIMA Project Management: fixes reached new installs only. They are now engine files, delivered by three-way merge so user edits are kept. With PRIMA Project Management installed they are still skipped and PRIMA's update manages them. The pre-update backup now also covers files the new version adds to the engine list.
+- **Install instructions point to the purchase email.** The README Quick Start told buyers to use the GitHub template, and the README and `getting-started.md` told them to clone PRIMA Memory from GitHub into the workspace, a method retired on 17 August 2026. Buyers install from the install prompt in their purchase email, which has Claude clone from `git.genaiskills.io` with their key; the README, `getting-started.md` and the suite registry now say so. The registry no longer names `/install-pack` for PRIMA Project Management, which has no `PACK.md`. "Prima Memory" corrected to "PRIMA Memory".
+- **One migration result for `CLIENT_PROFILE.md`.** `/setup` renamed the old profile to `CLIENT_PROFILE.backup.md` and left it beside the company files, while `/migrate-company` archived it. The company folder takes precedence, so both routes now archive the old profile, and any company file the migration overwrites, to `.claude/engine-backups/company-migration/`.
+- **Undoing an update.** `/update` told the user to "run /update with --rollback flag", but the command had no rollback step. `/update rollback` (or asking Claude to undo the update) now runs the rollback, reports what was restored and commits it; users working in a terminal are also given the script command, and the script's closing message names both. The rollback now restores every file in the backup rather than the files listed in the old version's manifest, which would have missed files a newer version added to the engine list.
+- **False merge conflicts on files the user never edited.** The merge base was the upstream commit that bumped the version, but a workspace may hold a copy from a later commit at the same version, so unedited lines looked like user edits and could conflict (seen on `CHANGELOG.md`). The base is now chosen per file from every upstream commit carrying the workspace's version: an exact match counts as unedited, otherwise the closest copy is used. Takes effect from the update after this one, since an update runs the workspace's existing script.
+- **`/save` cited a PRIMA-only rule.** `/save` said to follow the format in `context-checkpoint.md`, a rule that ships with PRIMA Project Management and is absent from a base workspace. It now follows that rule when present and otherwise uses the list of checkpoint contents in the command.
+- **Merge base described wrongly.** `README.md` and `engine-protection.md` said the three-way merge uses the backup from a previous update, so the first update had no merge base. `update-engine.sh` uses the upstream copy of the workspace's current version, falling back to the latest backup. Both documents now describe that order.
+- **Permission behaviour.** `capabilities-reference.md` said Claude asks permission before every action. `settings.json` pre-approves the core tools, so the page now describes the pre-approved tools, the two safety hooks and when Claude still stops to ask.
+- **README rules and documentation lists.** The rules list adds Decomposition, No Permission Prompts and State Validation, and the documentation list adds Cloud Sync Warning and Agent-Agnostic Design, matching the files that ship.
+- **`/dashboard` output ignored by git.** `dashboard.md` says the generated `Documentation/Reports/prima-dashboard.html` should be gitignored. `.gitignore` now ignores it.
+- **`drafting-documents` trigger.** The skill description named a `/draft` command that does not exist. It now names `/drafting-documents`, the skill's own slash name.
+- **`/setup` calendar entries.** `/setup` wrote calendar names into `selectedCalendars` as plain strings, while the state schema expects objects. It now writes `{"name": ...}` objects, with `id` added when known.
+- **`ROADMAP.md` brought up to date.** The header showed v1.5.1, and the body still listed v1.6 to v2.0 releases although the engine is at 3.0. Items that have shipped (pack catalogue browsing, example packs, engine compatibility checks, stale project flags, the industry question in `/setup`) now sit under Shipped; the rest are listed as planned with no version assigned. References to the maintainer's internal workspace removed.
+
+### Changed
+
+- `.claude/suite-registry.json`: PRIMA Project Management 1.5.0, which ships the HTML dashboard and the `/day` Today view (13 October 2026). The engine keeps its base `/day` and `/dashboard`; a workspace with PRIMA Project Management installed receives the fuller versions through the PRIMA update path in `update-engine.sh`.
+- `.claude/engine-manifest.json`: `engineVersion` 3.0.1, `released` 2026-10-14.
+- `.claude/suite-registry.json`: `host.version` 3.0.1.
+- `README.md`: version reference updated to v3.0.1.
+
+---
+
 ## [3.0.0] — 2026-09-15
 
 The default workspace layout changes shape. Nothing changes for a workspace that already exists.
